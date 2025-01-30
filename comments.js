@@ -1,29 +1,22 @@
-// create web server
-var http = require('http');
-var express = require('express');
-var app = express();
-var fs = require('fs');
-var bodyParser = require('body-parser');
-var comments = require('./comments.js');
+// Create web server
+const express = require('express');
+const app = express();
+const port = 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.get('/', function(req, res){
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    var html = fs.readFileSync('index.html');
-    res.end(html);
+const comments = [];
+
+app.get('/comments', (req, res) => {
+  res.json(comments);
 });
 
-app.get('/comments', function(req, res){
-    res.json(comments.getComments());
+app.post('/comments', (req, res) => {
+  const newComment = req.body;
+  comments.push(newComment);
+  res.json(newComment);
 });
 
-app.post('/comments', function(req, res){
-    var comment = req.body;
-    comments.addComment(comment);
-    res.json(comment);
-});
-
-app.listen(3000, function(){
-    console.log('Server is running on port 3000');
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
